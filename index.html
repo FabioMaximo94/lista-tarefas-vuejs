@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <title>Lista de tarefas</title>
+</head>
+
+<body>
+  <div id="mylist"></div>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    new Vue({
+      el: '#mylist',
+      template: `
+        <div class="container">
+          <h1>Adicione a lista</h1>
+          <hr />
+          <div class="form-todo form-group">
+            <p>
+              <input placeholder="Qual a tarefa?" type="text" name="tarefa" class="form-control" v-model="tarefa" />
+            </p>
+            <p>
+              <textarea placeholder="Descreva melhor oque fará nessa tarefa ..." name="descricao"  class="form-control" v-model="descricao"></textarea>
+            </p>
+            <button v-on:click="addTarefa" type="submit" class="btn btn-primary">Adicionar</button>
+          </div>
+          <div class="list-group">
+            <div class="list-group-item" v-for="(listtarefa, index) in alllisttarefas">
+              <span class="listtarefa__tarefa">Titulo: <strong>{{ listtarefa.tarefa }}</strong></span>
+              <p>{{ listtarefa.descricao }}</p>
+              <div>
+                <a href="#" title="Concluir" v-on:click.prevent="removelisttarefa(index)">Concluir tarefa</a>
+              </div>
+            </div>
+          </div>
+          <hr />
+        </div>
+      `,
+      data() {
+        return {
+          listtarefas: [],
+          tarefa: '',
+          descricao: '' 
+        }
+      },
+      methods: {
+        addTarefa() {
+          if (this.descricao.trim() === '') {
+            return;
+          }
+        
+          this.listtarefas.push({
+            tarefa: this.tarefa,
+            descricao: this.descricao
+          });
+
+          this.tarefa = '';
+          this.descricao = '';
+        },
+        removelisttarefa(index) {
+          this.listtarefas.splice(index, 1);
+        }
+      },
+      computed: {
+        alllisttarefas() {
+          return this.listtarefas.map(listtarefa => ({
+            ...listtarefa,
+            tarefa: listtarefa.tarefa.trim() === '' ? 'Sem titulo' : listtarefa.tarefa
+          }))
+        }
+      },
+      watch: {
+        listtarefas(val) {
+          console.log('val', val)
+        }
+      }
+    })
+  </script>
+</body>
+</html>
